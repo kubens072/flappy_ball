@@ -8,14 +8,20 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.os.Vibrator;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import static android.content.Context.VIBRATOR_SERVICE;
+
 public class Gameplay extends View{
 
+    Vibration v;
+    Vibrator vibrator;
     private int canvasWidth;
     private int canvasHeight;
+    private int change_level_speed = 30;
 
     //player
     private Paint birdMove = new Paint();
@@ -26,7 +32,6 @@ public class Gameplay extends View{
     //life
     private Paint lifeRed = new Paint();
     private  Paint lifeWhite = new Paint();
-    //private Bitmap life[] = new Bitmap[2];
     private int life_count=3;
     //bullet
     private int bulletX;
@@ -49,6 +54,11 @@ public class Gameplay extends View{
     //status check
     private boolean touch = false;
 
+
+    public int getValue()
+    {
+        return change_level_speed;
+    }
 
     public Gameplay(Context context) {
         super(context);
@@ -84,7 +94,7 @@ public class Gameplay extends View{
     protected void onDraw(Canvas canvas) {
 
         canvasWidth=canvas.getWidth();
-        canvasHeight=canvas.getHeight();
+        canvasHeight=canvas.getHeight()+sizePlayer;
 
         int minPlayerY = sizePlayer;
         int maxPlayerY = canvasHeight - sizePlayer;
@@ -110,11 +120,15 @@ public class Gameplay extends View{
             score += 10;
             foodX = -100;
             sizePlayer += 10;
+            //v.getVibration();
         }
-        else if(score == 50)
-            level=2;
-        else if(score == 100)
-            level=3;
+        else if(score == 50) {
+            level = 2;
+            change_level_speed=change_level_speed-20;
+        }
+        else if(score == 100) {
+            level = 3;
+        }
         if (foodX < 0) {
             foodX = canvasWidth + 20;
             foodY = (int) Math.floor(Math.random() * (maxPlayerY - minPlayerY)) + minPlayerY;
@@ -124,6 +138,7 @@ public class Gameplay extends View{
 
         bulletX -= bulletSpeed;
         if(checkCollision(bulletX, bulletY)){
+            getVibration();
             sendToast();
             bulletX = -100;
             life_count--;
@@ -178,5 +193,10 @@ public class Gameplay extends View{
             playerSpeed = -30;
         }
         return true;
+    }
+    public void getVibration()
+    {
+        vibrator = (Vibrator) v.getSystemService(VIBRATOR_SERVICE);
+        vibrator.vibrate(200);
     }
 }
