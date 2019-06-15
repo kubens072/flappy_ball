@@ -2,21 +2,25 @@ package pls.s226939.flappybird_game;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
 import static android.content.Context.VIBRATOR_SERVICE;
 
-public class Gameplay extends View{
+public class Gameplay extends View {
 
+    private int timerInterval=30;
     Vibration v;
     Vibrator vibrator;
     private int canvasWidth;
@@ -35,9 +39,12 @@ public class Gameplay extends View{
     private int life_count=3;
     //bullet
     private int bulletX;
+    private int bulletX2;
     private int bulletY;
+    private int bulletY2;
     private int bulletSpeed = 20;
     private Paint bulletPaint = new Paint();
+    private Paint bullet2 = new Paint();
     //food
     private int foodX;
     private int foodY;
@@ -55,10 +62,6 @@ public class Gameplay extends View{
     private boolean touch = false;
 
 
-    public int getValue()
-    {
-        return change_level_speed;
-    }
 
     public Gameplay(Context context) {
         super(context);
@@ -120,15 +123,8 @@ public class Gameplay extends View{
             score += 10;
             foodX = -100;
             sizePlayer += 10;
-            //v.getVibration();
         }
-        else if(score == 50) {
-            level = 2;
-            change_level_speed=change_level_speed-20;
-        }
-        else if(score == 100) {
-            level = 3;
-        }
+
         if (foodX < 0) {
             foodX = canvasWidth + 20;
             foodY = (int) Math.floor(Math.random() * (maxPlayerY - minPlayerY)) + minPlayerY;
@@ -138,15 +134,14 @@ public class Gameplay extends View{
 
         bulletX -= bulletSpeed;
         if(checkCollision(bulletX, bulletY)){
-            getVibration();
+
             sendToast();
             bulletX = -100;
             life_count--;
             if(life_count==0)
             {
                 //Game Over
-                Toast.makeText(getContext(),"Koniec gry!",Toast.LENGTH_SHORT).show();
-
+                Toast.makeText(getContext(),"Koniec gry! Twoj wynik to: " +score+ " punktów",Toast.LENGTH_SHORT).show();
             }
         }
         if(bulletX <0){
@@ -154,7 +149,17 @@ public class Gameplay extends View{
             bulletY = (int) Math.floor(Math.random() * (maxPlayerY - minPlayerY)) + minPlayerY;
         }
         canvas.drawCircle(bulletX, bulletY,15, bulletPaint);
+        if(score == 50) {
+            level = 2;
+            timerInterval=10;
+            bulletX2=canvasWidth+200;
+            bulletY2 = (int) Math.floor(Math.random() * (maxPlayerY - minPlayerY)) + minPlayerY;
 
+            canvas.drawCircle(bulletX2,bulletY2,10,bullet2);
+        }
+        else if(score == 100) {
+            level = 3;
+        }
         canvas.drawText("Score :" + score, 20,60,scorePaint);
 
         canvas.drawText("Lv. " + level, canvasWidth - 60, 60, levelPaint);
@@ -166,14 +171,13 @@ public class Gameplay extends View{
             int y = 30;
             if(i<life_count)
             {
-                canvas.drawCircle(x,y,15,lifeRed);
+                canvas.drawCircle(x,y,30,lifeRed);
             }
             else{
-                canvas.drawCircle(x,y,15,lifeWhite);
+                canvas.drawCircle(x,y,30,lifeWhite);
             }
         }
     }
-
     public void sendToast()
     {
         Toast.makeText(getContext(),"Zostales trafiony",Toast.LENGTH_SHORT).show();
@@ -193,10 +197,5 @@ public class Gameplay extends View{
             playerSpeed = -30;
         }
         return true;
-    }
-    public void getVibration()
-    {
-        vibrator = (Vibrator) v.getSystemService(VIBRATOR_SERVICE);
-        vibrator.vibrate(200);
     }
 }

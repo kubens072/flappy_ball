@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button start;
     private Button exit;
-    private HandlerClass activity;
+    private int TimeInterval = 30;
 
     Vibrator vibrator;
     //private final static long TIMER_INTERVAL = 30;
@@ -32,11 +32,7 @@ public class MainActivity extends AppCompatActivity {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //getVibration();
-                //activity = new HandlerClass(new Handler());
-               // Thread thread = new Thread(activity);
-               // thread.start();
-                Intent intent = new Intent(MainActivity.this, HandlerClass.class);
+                Intent intent = new Intent(MainActivity.this, CheckLevel.class);
                 startActivity(intent);
             }
         });
@@ -51,9 +47,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    public void getVibration()
+    public int getInterval()
     {
-        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        vibrator.vibrate(200);
+        return TimeInterval;
     }
+
+
 }
