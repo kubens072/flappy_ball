@@ -16,11 +16,6 @@ public class MainActivity extends AppCompatActivity {
 
     private Button start;
     private Button exit;
-    private int TimeInterval = 30;
-
-    Vibrator vibrator;
-    //private final static long TIMER_INTERVAL = 30;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,12 +40,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
     }
-    public int getInterval()
-    {
-        return TimeInterval;
-    }
-
-
 }

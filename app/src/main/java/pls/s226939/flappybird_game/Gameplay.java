@@ -10,22 +10,21 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.Timer;
+
 import static android.content.Context.VIBRATOR_SERVICE;
 
 public class Gameplay extends View {
 
-    private int timerInterval=30;
-    Vibration v;
-    Vibrator vibrator;
     private int canvasWidth;
     private int canvasHeight;
-    private int change_level_speed = 30;
 
     //player
     private Paint birdMove = new Paint();
@@ -60,8 +59,6 @@ public class Gameplay extends View {
 
     //status check
     private boolean touch = false;
-
-
 
     public Gameplay(Context context) {
         super(context);
@@ -100,12 +97,24 @@ public class Gameplay extends View {
         canvasHeight=canvas.getHeight()+sizePlayer;
 
         int minPlayerY = sizePlayer;
-        int maxPlayerY = canvasHeight - sizePlayer;
+        int maxPlayerY = canvasHeight ;
 
         playerY += playerSpeed;
         if(playerY <minPlayerY) playerY = minPlayerY;
-        if(playerY >maxPlayerY) playerY = maxPlayerY;
+        if(playerY >maxPlayerY)
+        {
+            playerY = maxPlayerY;
+            Toast.makeText(getContext(),"Przegrałeś",Toast.LENGTH_SHORT).show();
+            try {
+                Thread.sleep(2000);
+                System.exit(0);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
         playerSpeed +=2;
+
 
         if(touch)
         {
@@ -127,21 +136,29 @@ public class Gameplay extends View {
 
         if (foodX < 0) {
             foodX = canvasWidth + 20;
-            foodY = (int) Math.floor(Math.random() * (maxPlayerY - minPlayerY)) + minPlayerY;
+            foodY = (int) Math.floor(Math.random() * (maxPlayerY - minPlayerY)) + minPlayerY-sizePlayer;
         }
         canvas.drawCircle(foodX, foodY, 10, foodPaint);
 
 
         bulletX -= bulletSpeed;
         if(checkCollision(bulletX, bulletY)){
-
             sendToast();
             bulletX = -100;
             life_count--;
             if(life_count==0)
             {
                 //Game Over
-                Toast.makeText(getContext(),"Koniec gry! Twoj wynik to: " +score+ " punktów",Toast.LENGTH_SHORT).show();
+
+                try {
+
+                    Thread.sleep(3000);
+                    System.exit(0);
+                    Toast.makeText(getContext(),"Koniec gry! Twoj wynik to: " +score+ " punktów",Toast.LENGTH_SHORT).show();
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
         if(bulletX <0){
@@ -151,7 +168,6 @@ public class Gameplay extends View {
         canvas.drawCircle(bulletX, bulletY,15, bulletPaint);
         if(score == 50) {
             level = 2;
-            timerInterval=10;
             bulletX2=canvasWidth+200;
             bulletY2 = (int) Math.floor(Math.random() * (maxPlayerY - minPlayerY)) + minPlayerY;
 
@@ -167,8 +183,8 @@ public class Gameplay extends View {
         //life
         for(int i = 0; i<3; i++)
         {
-            int x = (int) (460 + 20 * 1.5 * i);
-            int y = 30;
+            int x = (int) (460 + 45 * 1.5 * i);
+            int y = 40;
             if(i<life_count)
             {
                 canvas.drawCircle(x,y,30,lifeRed);

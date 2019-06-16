@@ -10,7 +10,6 @@ import android.widget.CheckBox;
 public class CheckLevel extends AppCompatActivity {
     Button button;
     CheckBox easy,medium,hard;
-    private int Time_Interval;
     private int x;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +28,6 @@ public class CheckLevel extends AppCompatActivity {
                 if(easy.isChecked())
                 {
                     x=1;
-                    //Time_Interval = 30;
                 }
             }
         });
@@ -39,7 +37,6 @@ public class CheckLevel extends AppCompatActivity {
                 if(medium.isChecked())
                 {
                     x = 2;
-                    //Time_Interval=25;
                 }
             }
         });
@@ -49,7 +46,6 @@ public class CheckLevel extends AppCompatActivity {
                 if(hard.isChecked())
                 {
                     x = 3;
-                    Time_Interval = 20;
                 }
             }
         });
@@ -61,9 +57,5 @@ public class CheckLevel extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }
-    public int getInterval()
-    {
-        return Time_Interval;
     }
 }

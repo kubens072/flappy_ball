@@ -12,12 +12,7 @@ public class HandlerClass extends AppCompatActivity{
 
     private Gameplay gameView;
     private Handler handler = new Handler();
-    private CheckLevel lvl;
-    //private MainActivity lvl;
     private int TimeInterval;
-
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState){
