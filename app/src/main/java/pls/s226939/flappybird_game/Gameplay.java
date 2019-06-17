@@ -20,6 +20,7 @@ import android.widget.Toast;
 import java.util.Timer;
 
 import static android.content.Context.VIBRATOR_SERVICE;
+import static java.lang.Math.sqrt;
 
 public class Gameplay extends View {
 
@@ -44,11 +45,13 @@ public class Gameplay extends View {
     private int bulletSpeed = 20;
     private Paint bulletPaint = new Paint();
     private Paint bullet2 = new Paint();
+    private int sizeEnemy=20;
     //food
     private int foodX;
     private int foodY;
     private int foodSpeed = 15;
     private Paint foodPaint = new Paint();
+    private int sizeFood=10;
 
     //level
     private Paint levelPaint = new Paint();
@@ -128,7 +131,7 @@ public class Gameplay extends View {
 
 
         foodX -= foodSpeed;
-        if (checkCollision(foodX, foodY)) {
+        if (checkCollisionFood(foodX, foodY)) {
             score += 10;
             foodX = -100;
             sizePlayer += 10;
@@ -138,11 +141,11 @@ public class Gameplay extends View {
             foodX = canvasWidth + 20;
             foodY = (int) Math.floor(Math.random() * (maxPlayerY - minPlayerY)) + minPlayerY-sizePlayer;
         }
-        canvas.drawCircle(foodX, foodY, 10, foodPaint);
+        canvas.drawCircle(foodX, foodY, sizeFood, foodPaint);
 
 
         bulletX -= bulletSpeed;
-        if(checkCollision(bulletX, bulletY)){
+        if(checkCollisionBullet(bulletX, bulletY)){
             sendToast();
             bulletX = -100;
             life_count--;
@@ -165,13 +168,14 @@ public class Gameplay extends View {
             bulletX =canvasWidth+200;
             bulletY = (int) Math.floor(Math.random() * (maxPlayerY - minPlayerY)) + minPlayerY;
         }
-        canvas.drawCircle(bulletX, bulletY,15, bulletPaint);
+        canvas.drawCircle(bulletX, bulletY,sizeEnemy, bulletPaint);
+
         if(score == 50) {
             level = 2;
             bulletX2=canvasWidth+200;
             bulletY2 = (int) Math.floor(Math.random() * (maxPlayerY - minPlayerY)) + minPlayerY;
 
-            canvas.drawCircle(bulletX2,bulletY2,10,bullet2);
+            canvas.drawCircle(bulletX2,bulletY2,sizeEnemy,bullet2);
         }
         else if(score == 100) {
             level = 3;
@@ -198,9 +202,17 @@ public class Gameplay extends View {
     {
         Toast.makeText(getContext(),"Zostales trafiony",Toast.LENGTH_SHORT).show();
     }
-    public boolean checkCollision(int x, int y)
+    public boolean checkCollisionBullet(int x, int y)
     {
-        if(playerX <x && x<(playerX + sizePlayer) && playerY < y && y < (playerY + sizePlayer))
+        if((sizePlayer + sizeEnemy) >= sqrt(((bulletX-playerX)*(bulletX-playerX))+((bulletY-playerY)*(bulletY-playerY))))
+        {
+            return true;
+        }
+        return false;
+    }
+    public boolean checkCollisionFood(int x, int y)
+    {
+        if((sizePlayer + sizeFood) >= sqrt(((foodX-playerX)*(foodX-playerX))+((foodY-playerY)*(foodY-playerY))))
         {
             return true;
         }
